@@ -178,52 +178,53 @@ export default function Home() {
   ]);
 
   return (
-    <main className="min-h-screen bg-slate-50 p-6 md:p-10">
-      <div className="mx-auto max-w-6xl">
-        <h1 className="text-4xl font-bold mb-4">
+    <main className="min-h-screen bg-slate-100 px-4 py-8 md:px-8 md:py-10">
+      <div className="mx-auto max-w-7xl">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
   Rent vs Buy Calculator (2026)
 </h1>
 
-<p className="mb-6 text-gray-600">
+<p className="text-base md:text-lg text-slate-600 max-w-3xl mb-6">
   Use this calculator to compare renting vs buying with real numbers,
-  including mortgage, taxes, and break-even analysis.
+  including mortgage costs, taxes, maintenance, break-even timing,
+  and long-term net worth.
 </p>
 
-<div className="mb-6 flex gap-3">
-<a
-  href="/affordability"
-  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
->
-  Start with affordability →
-</a>
+<div className="mb-8 flex flex-wrap gap-3">
+  <a
+    href="/affordability"
+    className="px-4 py-2.5 bg-white border rounded-xl shadow-sm hover:bg-slate-50"
+  >
+    Start with affordability →
+  </a>
 
-<a
-  href="/mortgage"
-  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
->
-  Mortgage calculator →
-</a>  
+  <a
+    href="/mortgage"
+    className="px-4 py-2.5 bg-white border rounded-xl shadow-sm hover:bg-slate-50"
+  >
+    Mortgage calculator →
+  </a>
 
-<a
+  <a
     href="/refinance"
-    className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+    className="px-4 py-2.5 bg-white border rounded-xl shadow-sm hover:bg-slate-50"
   >
     Refinance calculator →
   </a>
 
   <a
-  href="/invest-vs-debt"
-  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
->
-  Invest vs debt →
-</a>
+    href="/invest-vs-debt"
+    className="px-4 py-2.5 bg-white border rounded-xl shadow-sm hover:bg-slate-50"
+  >
+    Invest vs debt →
+  </a>
 </div>
         <p className="text-slate-600 mb-8">
           Compare renting vs buying, including monthly costs and break-even timing.
         </p>
 
-        <div className="grid gap-6 md:grid-cols-2">
-          <div className="rounded-2xl bg-white p-6 shadow-sm border">
+        <div className="grid gap-8 lg:grid-cols-2">
+          <div className="rounded-3xl bg-white p-6 md:p-8 shadow-sm border border-slate-200">
             <h2 className="text-xl font-semibold mb-4">Inputs</h2>
 
             <div className="space-y-4">
@@ -233,7 +234,7 @@ export default function Home() {
                   type="number"
                   value={homePrice}
                   onChange={(e) => setHomePrice(Number(e.target.value))}
-                  className="w-full rounded-lg border p-3"
+                  className="w-full rounded-xl border border-slate-300 bg-white p-3"
                 />
               </div>
 
@@ -243,7 +244,7 @@ export default function Home() {
                   type="number"
                   value={monthlyRent}
                   onChange={(e) => setMonthlyRent(Number(e.target.value))}
-                  className="w-full rounded-lg border p-3"
+                  className="w-full rounded-xl border border-slate-300 bg-white p-3"
                 />
               </div>
 
@@ -253,7 +254,7 @@ export default function Home() {
                   type="number"
                   value={downPaymentPercent}
                   onChange={(e) => setDownPaymentPercent(Number(e.target.value))}
-                  className="w-full rounded-lg border p-3"
+                  className="w-full rounded-xl border border-slate-300 bg-white p-3"
                 />
               </div>
 
@@ -264,7 +265,7 @@ export default function Home() {
                   step="0.1"
                   value={interestRate}
                   onChange={(e) => setInterestRate(Number(e.target.value))}
-                  className="w-full rounded-lg border p-3"
+                  className="w-full rounded-xl border border-slate-300 bg-white p-3"
                 />
               </div>
 
@@ -275,7 +276,7 @@ export default function Home() {
                   step="0.1"
                   value={propertyTaxRate}
                   onChange={(e) => setPropertyTaxRate(Number(e.target.value))}
-                  className="w-full rounded-lg border p-3"
+                  className="w-full rounded-xl border border-slate-300 bg-white p-3"
                 />
               </div>
 
@@ -286,7 +287,7 @@ export default function Home() {
                   step="0.1"
                   value={maintenanceRate}
                   onChange={(e) => setMaintenanceRate(Number(e.target.value))}
-                  className="w-full rounded-lg border p-3"
+                  className="w-full rounded-xl border border-slate-300 bg-white p-3"
                 />
               </div>
 
@@ -296,7 +297,7 @@ export default function Home() {
                   type="number"
                   value={insuranceMonthly}
                   onChange={(e) => setInsuranceMonthly(Number(e.target.value))}
-                  className="w-full rounded-lg border p-3"
+                  className="w-full rounded-xl border border-slate-300 bg-white p-3"
                 />
               </div>
 
@@ -306,7 +307,7 @@ export default function Home() {
                   type="number"
                   value={hoaMonthly}
                   onChange={(e) => setHoaMonthly(Number(e.target.value))}
-                  className="w-full rounded-lg border p-3"
+                  className="w-full rounded-xl border border-slate-300 bg-white p-3"
                 />
               </div>
 
@@ -317,7 +318,7 @@ export default function Home() {
                   step="0.1"
                   value={homeAppreciationRate}
                   onChange={(e) => setHomeAppreciationRate(Number(e.target.value))}
-                  className="w-full rounded-lg border p-3"
+                  className="w-full rounded-xl border border-slate-300 bg-white p-3"
                 />
               </div>
 
@@ -328,7 +329,7 @@ export default function Home() {
                   step="0.1"
                   value={rentIncreaseRate}
                   onChange={(e) => setRentIncreaseRate(Number(e.target.value))}
-                  className="w-full rounded-lg border p-3"
+                  className="w-full rounded-xl border border-slate-300 bg-white p-3"
                 />
               </div>
 
@@ -339,7 +340,7 @@ export default function Home() {
                   step="0.1"
                   value={investmentReturnRate}
                   onChange={(e) => setInvestmentReturnRate(Number(e.target.value))}
-                  className="w-full rounded-lg border p-3"
+                  className="w-full rounded-xl border border-slate-300 bg-white p-3"
                 />
               </div>
 
@@ -349,7 +350,7 @@ export default function Home() {
                   type="number"
                   value={yearsToCompare}
                   onChange={(e) => setYearsToCompare(Number(e.target.value))}
-                  className="w-full rounded-lg border p-3"
+                  className="w-full rounded-xl border border-slate-300 bg-white p-3"
                 />
               </div>
             </div>
@@ -358,7 +359,7 @@ export default function Home() {
           <div className="rounded-2xl bg-white p-6 shadow-sm border">
             <h2 className="text-xl font-semibold mb-4">Results</h2>
 
-            <div className="rounded-xl bg-slate-900 text-white p-5 mb-6">
+            <div className="rounded-2xl bg-slate-900 text-white p-6 mb-6 shadow-sm">
               <p className="text-sm uppercase tracking-wide text-slate-300 mb-2">
                 Recommendation
               </p>
@@ -433,7 +434,7 @@ export default function Home() {
 
             <div>
               <h3 className="text-lg font-semibold mb-3">Net Worth Over Time</h3>
-              <div className="h-72">
+              <div className="h-80 rounded-2xl bg-slate-50 p-4">
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={results.chartData}>
                     <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
