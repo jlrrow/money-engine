@@ -171,7 +171,14 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-10">
       <div className="mx-auto max-w-6xl">
-        <h1 className="text-3xl font-bold mb-2">Rent vs Buy Calculator</h1>
+        <h1 className="text-4xl font-bold mb-4">
+  Rent vs Buy Calculator (2026)
+</h1>
+
+<p className="mb-6 text-gray-600">
+  Use this calculator to compare renting vs buying with real numbers,
+  including mortgage, taxes, and break-even analysis.
+</p>
         <p className="text-slate-600 mb-8">
           Compare renting vs buying, including monthly costs and break-even timing.
         </p>
