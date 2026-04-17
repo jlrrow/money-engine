@@ -103,11 +103,15 @@ export default function Home() {
       const buyerEquity = homeValue - remainingLoan;
       const renterWealth = renterInvestments;
 
-      if (!breakEvenYear && buyerEquity > renterWealth) {
+      const buyingClosingCosts = homePrice * 0.03;
+const sellingCosts = homeValue * 0.06;
+const buyerNetAfterSale = homeValue - sellingCosts - remainingLoan;
+
+if (!breakEvenYear && buyerNetAfterSale > renterWealth + buyingClosingCosts) {
         breakEvenYear = month / 12;
       }
 
-      finalBuyerNetWorth = buyerEquity;
+      finalBuyerNetWorth = buyerNetAfterSale - buyingClosingCosts;
       finalRenterNetWorth = renterWealth;
     }
 
