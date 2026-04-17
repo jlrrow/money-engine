@@ -70,9 +70,18 @@ export default function Affordability() {
       </button>
 
       {result && (
-        <p className="mt-6 font-bold">
+        <div className="mt-6">
+          <p className="font-bold mb-3">
           You can afford a home around ${result.toLocaleString()}
         </p>
+
+        <a
+          href="/"
+          className="inline-block px-4 py-2 bg-blue-600 text-white rounded"
+        >
+          Now compare renting vs buying →
+        </a>  
+        </div>  
       )}
     </main>
   );
