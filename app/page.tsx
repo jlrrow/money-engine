@@ -179,19 +179,22 @@ export default function Home() {
   Use this calculator to compare renting vs buying with real numbers,
   including mortgage, taxes, and break-even analysis.
 </p>
+
+<div className="mb-6 flex gap-3">
 <a
   href="/affordability"
-  className="inline-block mb-6 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
 >
   Start with affordability →
 </a>
 
 <a
   href="/mortgage"
-  className="inline-block mb-6 ml-3 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+  className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
 >
   Mortgage calculator →
 </a>  
+</div>
         <p className="text-slate-600 mb-8">
           Compare renting vs buying, including monthly costs and break-even timing.
         </p>
