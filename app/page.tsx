@@ -1,5 +1,15 @@
 "use client";
 import { useMemo, useState } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 function formatMoney(value: number) {
   return new Intl.NumberFormat("en-US", {
@@ -64,7 +74,9 @@ export default function Home() {
 
     const monthlyDifference = Math.abs(totalBuyMonthly - monthlyRent);
     const recommendation =
-      totalBuyMonthly < monthlyRent ? "Buying is cheaper today" : "Renting is cheaper today";
+      totalBuyMonthly < monthlyRent
+        ? "Buying is cheaper today"
+        : "Renting is cheaper today";
 
     let breakEvenYear: number | null = null;
     let finalBuyerNetWorth = 0;
@@ -79,6 +91,12 @@ export default function Home() {
     let homeValue = homePrice;
     let renterInvestments = downPayment;
 
+    const chartData: {
+      year: number;
+      buyerNetWorth: number;
+      renterNetWorth: number;
+    }[] = [];
+
     for (let month = 1; month <= totalMonths; month++) {
       const interestPortion = remainingLoan * (interestRate / 100 / 12);
       const principalPortion = mortgagePayment - interestPortion;
@@ -87,7 +105,7 @@ export default function Home() {
       homeValue = homeValue * (1 + monthlyHomeAppreciation);
 
       const currentRent =
-        monthlyRent * Math.pow(1 + monthlyRentIncrease, month - 1);
+        monthlyRent * Math.pow(1 + monthlyRentIncrease, month / 12);
 
       const monthlyOwnerCost =
         mortgagePayment +
@@ -97,22 +115,28 @@ export default function Home() {
         hoaMonthly;
 
       const renterMonthlySurplus = Math.max(0, monthlyOwnerCost - currentRent);
+
       renterInvestments =
         renterInvestments * (1 + monthlyInvestmentReturn) + renterMonthlySurplus;
 
-      const buyerEquity = homeValue - remainingLoan;
-      const renterWealth = renterInvestments;
-
       const buyingClosingCosts = homePrice * 0.03;
-const sellingCosts = homeValue * 0.06;
-const buyerNetAfterSale = homeValue - sellingCosts - remainingLoan;
+      const sellingCosts = homeValue * 0.06;
+      const buyerNetAfterSale = homeValue - sellingCosts - remainingLoan;
 
-if (!breakEvenYear && buyerNetAfterSale > renterWealth + buyingClosingCosts) {
+      if (!breakEvenYear && buyerNetAfterSale > renterInvestments + buyingClosingCosts) {
         breakEvenYear = month / 12;
       }
 
       finalBuyerNetWorth = buyerNetAfterSale - buyingClosingCosts;
-      finalRenterNetWorth = renterWealth;
+      finalRenterNetWorth = renterInvestments;
+
+      if (month % 12 === 0) {
+        chartData.push({
+          year: month / 12,
+          buyerNetWorth: Math.round(finalBuyerNetWorth),
+          renterNetWorth: Math.round(finalRenterNetWorth),
+        });
+      }
     }
 
     return {
@@ -127,6 +151,7 @@ if (!breakEvenYear && buyerNetAfterSale > renterWealth + buyingClosingCosts) {
       breakEvenYear,
       finalBuyerNetWorth,
       finalRenterNetWorth,
+      chartData,
     };
   }, [
     homePrice,
@@ -303,7 +328,7 @@ if (!breakEvenYear && buyerNetAfterSale > renterWealth + buyingClosingCosts) {
               </p>
             </div>
 
-            <div className="space-y-3 text-sm">
+            <div className="space-y-3 text-sm mb-8">
               <div className="flex justify-between border-b pb-2">
                 <span>Monthly Rent</span>
                 <span className="font-semibold">{formatMoney(monthlyRent)}</span>
@@ -357,6 +382,37 @@ if (!breakEvenYear && buyerNetAfterSale > renterWealth + buyingClosingCosts) {
               <div className="flex justify-between pt-2 text-base">
                 <span className="font-bold">Renter Net Worth After {yearsToCompare} Years</span>
                 <span className="font-bold">{formatMoney(results.finalRenterNetWorth)}</span>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold mb-3">Net Worth Over Time</h3>
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={results.chartData}>
+                    <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
+                    <XAxis dataKey="year" />
+                    <YAxis tickFormatter={(value) => `$${Math.round(value / 1000)}k`} />
+                    <Tooltip formatter={(value: any) => formatMoney(Number(value))} />
+                    <Legend />
+                    <Line
+                      type="monotone"
+                      dataKey="buyerNetWorth"
+                      name="Buyer Net Worth"
+                      stroke="#22c55e"
+                      strokeWidth={4}
+                      dot={false}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="renterNetWorth"
+                      name="Renter Net Worth"
+                      stroke="#ef4444"
+                      strokeWidth={4}
+                      dot={false}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             </div>
           </div>
