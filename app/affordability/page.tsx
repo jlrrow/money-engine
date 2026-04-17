@@ -15,8 +15,7 @@ export default function Affordability() {
     const loanTerm = 30 * 12;
 
     const loanAmount =
-      (maxPayment *
-        (Math.pow(1 + monthlyRate, loanTerm) - 1)) /
+      (maxPayment * (Math.pow(1 + monthlyRate, loanTerm) - 1)) /
       (monthlyRate * Math.pow(1 + monthlyRate, loanTerm));
 
     setResult(Math.round(loanAmount));
@@ -24,7 +23,18 @@ export default function Affordability() {
 
   return (
     <main className="p-10 max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">
+      <div className="bg-yellow-200 p-3 mb-4 font-bold">
+        AFFORDABILITY PAGE
+      </div>
+
+      <a
+        href="/"
+        className="inline-block mb-6 px-3 py-2 bg-gray-200 rounded"
+      >
+        ← Back to Rent vs Buy
+      </a>
+
+      <h1 className="text-4xl font-bold mb-4">
         How Much House Can I Afford?
       </h1>
 
