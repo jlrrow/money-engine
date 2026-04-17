@@ -9,6 +9,25 @@ function formatMoney(value: number) {
   }).format(value);
 }
 
+function calculateMortgagePayment(
+  principal: number,
+  annualRatePercent: number,
+  years: number
+) {
+  const monthlyRate = annualRatePercent / 100 / 12;
+  const numberOfPayments = years * 12;
+
+  if (principal <= 0) return 0;
+  if (monthlyRate === 0) return principal / numberOfPayments;
+
+  return (
+    (principal *
+      monthlyRate *
+      Math.pow(1 + monthlyRate, numberOfPayments)) /
+    (Math.pow(1 + monthlyRate, numberOfPayments) - 1)
+  );
+}
+
 export default function Home() {
   const [homePrice, setHomePrice] = useState(300000);
   const [monthlyRent, setMonthlyRent] = useState(2200);
@@ -18,21 +37,20 @@ export default function Home() {
   const [maintenanceRate, setMaintenanceRate] = useState(1);
   const [insuranceMonthly, setInsuranceMonthly] = useState(150);
   const [hoaMonthly, setHoaMonthly] = useState(0);
+  const [homeAppreciationRate, setHomeAppreciationRate] = useState(3);
+  const [rentIncreaseRate, setRentIncreaseRate] = useState(3);
+  const [investmentReturnRate, setInvestmentReturnRate] = useState(7);
+  const [yearsToCompare, setYearsToCompare] = useState(10);
 
   const results = useMemo(() => {
     const downPayment = homePrice * (downPaymentPercent / 100);
     const loanAmount = homePrice - downPayment;
 
-    const monthlyInterestRate = interestRate / 100 / 12;
-    const loanTermMonths = 30 * 12;
-
-    const mortgagePayment =
-      loanAmount > 0
-        ? (loanAmount *
-            monthlyInterestRate *
-            Math.pow(1 + monthlyInterestRate, loanTermMonths)) /
-          (Math.pow(1 + monthlyInterestRate, loanTermMonths) - 1)
-        : 0;
+    const mortgagePayment = calculateMortgagePayment(
+      loanAmount,
+      interestRate,
+      30
+    );
 
     const propertyTaxMonthly = (homePrice * (propertyTaxRate / 100)) / 12;
     const maintenanceMonthly = (homePrice * (maintenanceRate / 100)) / 12;
@@ -44,9 +62,54 @@ export default function Home() {
       insuranceMonthly +
       hoaMonthly;
 
-    const difference = Math.abs(totalBuyMonthly - monthlyRent);
+    const monthlyDifference = Math.abs(totalBuyMonthly - monthlyRent);
     const recommendation =
-      totalBuyMonthly < monthlyRent ? "Buying is cheaper" : "Renting is cheaper";
+      totalBuyMonthly < monthlyRent ? "Buying is cheaper today" : "Renting is cheaper today";
+
+    let breakEvenYear: number | null = null;
+    let finalBuyerNetWorth = 0;
+    let finalRenterNetWorth = 0;
+
+    const monthlyInvestmentReturn = investmentReturnRate / 100 / 12;
+    const monthlyHomeAppreciation = homeAppreciationRate / 100 / 12;
+    const monthlyRentIncrease = rentIncreaseRate / 100 / 12;
+    const totalMonths = yearsToCompare * 12;
+
+    let remainingLoan = loanAmount;
+    let homeValue = homePrice;
+    let renterInvestments = downPayment;
+
+    for (let month = 1; month <= totalMonths; month++) {
+      const interestPortion = remainingLoan * (interestRate / 100 / 12);
+      const principalPortion = mortgagePayment - interestPortion;
+      remainingLoan = Math.max(0, remainingLoan - principalPortion);
+
+      homeValue = homeValue * (1 + monthlyHomeAppreciation);
+
+      const currentRent =
+        monthlyRent * Math.pow(1 + monthlyRentIncrease, month - 1);
+
+      const monthlyOwnerCost =
+        mortgagePayment +
+        propertyTaxMonthly +
+        maintenanceMonthly +
+        insuranceMonthly +
+        hoaMonthly;
+
+      const renterMonthlySurplus = Math.max(0, monthlyOwnerCost - currentRent);
+      renterInvestments =
+        renterInvestments * (1 + monthlyInvestmentReturn) + renterMonthlySurplus;
+
+      const buyerEquity = homeValue - remainingLoan;
+      const renterWealth = renterInvestments;
+
+      if (!breakEvenYear && buyerEquity > renterWealth) {
+        breakEvenYear = month / 12;
+      }
+
+      finalBuyerNetWorth = buyerEquity;
+      finalRenterNetWorth = renterWealth;
+    }
 
     return {
       downPayment,
@@ -55,8 +118,11 @@ export default function Home() {
       propertyTaxMonthly,
       maintenanceMonthly,
       totalBuyMonthly,
-      difference,
+      monthlyDifference,
       recommendation,
+      breakEvenYear,
+      finalBuyerNetWorth,
+      finalRenterNetWorth,
     };
   }, [
     homePrice,
@@ -67,14 +133,18 @@ export default function Home() {
     maintenanceRate,
     insuranceMonthly,
     hoaMonthly,
+    homeAppreciationRate,
+    rentIncreaseRate,
+    investmentReturnRate,
+    yearsToCompare,
   ]);
 
   return (
     <main className="min-h-screen bg-slate-50 p-6 md:p-10">
-      <div className="mx-auto max-w-5xl">
+      <div className="mx-auto max-w-6xl">
         <h1 className="text-3xl font-bold mb-2">Rent vs Buy Calculator</h1>
         <p className="text-slate-600 mb-8">
-          Compare monthly renting costs against realistic homeownership costs.
+          Compare renting vs buying, including monthly costs and break-even timing.
         </p>
 
         <div className="grid gap-6 md:grid-cols-2">
@@ -103,9 +173,7 @@ export default function Home() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Down Payment %
-                </label>
+                <label className="block text-sm font-medium mb-1">Down Payment %</label>
                 <input
                   type="number"
                   value={downPaymentPercent}
@@ -126,9 +194,7 @@ export default function Home() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Property Tax % / year
-                </label>
+                <label className="block text-sm font-medium mb-1">Property Tax % / year</label>
                 <input
                   type="number"
                   step="0.1"
@@ -139,9 +205,7 @@ export default function Home() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Maintenance % / year
-                </label>
+                <label className="block text-sm font-medium mb-1">Maintenance % / year</label>
                 <input
                   type="number"
                   step="0.1"
@@ -152,9 +216,7 @@ export default function Home() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Home Insurance / month
-                </label>
+                <label className="block text-sm font-medium mb-1">Home Insurance / month</label>
                 <input
                   type="number"
                   value={insuranceMonthly}
@@ -172,6 +234,49 @@ export default function Home() {
                   className="w-full rounded-lg border p-3"
                 />
               </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Home Appreciation % / year</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={homeAppreciationRate}
+                  onChange={(e) => setHomeAppreciationRate(Number(e.target.value))}
+                  className="w-full rounded-lg border p-3"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Rent Increase % / year</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={rentIncreaseRate}
+                  onChange={(e) => setRentIncreaseRate(Number(e.target.value))}
+                  className="w-full rounded-lg border p-3"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Investment Return % / year</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={investmentReturnRate}
+                  onChange={(e) => setInvestmentReturnRate(Number(e.target.value))}
+                  className="w-full rounded-lg border p-3"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Years to Compare</label>
+                <input
+                  type="number"
+                  value={yearsToCompare}
+                  onChange={(e) => setYearsToCompare(Number(e.target.value))}
+                  className="w-full rounded-lg border p-3"
+                />
+              </div>
             </div>
           </div>
 
@@ -184,7 +289,13 @@ export default function Home() {
               </p>
               <p className="text-2xl font-bold">{results.recommendation}</p>
               <p className="mt-2 text-slate-300">
-                Difference: {formatMoney(results.difference)} per month
+                Monthly difference: {formatMoney(results.monthlyDifference)}
+              </p>
+              <p className="mt-2 text-slate-300">
+                Break-even:{" "}
+                {results.breakEvenYear
+                  ? `${results.breakEvenYear.toFixed(1)} years`
+                  : `Not within ${yearsToCompare} years`}
               </p>
             </div>
 
@@ -206,23 +317,17 @@ export default function Home() {
 
               <div className="flex justify-between border-b pb-2">
                 <span>Mortgage</span>
-                <span className="font-semibold">
-                  {formatMoney(results.mortgagePayment)}
-                </span>
+                <span className="font-semibold">{formatMoney(results.mortgagePayment)}</span>
               </div>
 
               <div className="flex justify-between border-b pb-2">
                 <span>Property Tax</span>
-                <span className="font-semibold">
-                  {formatMoney(results.propertyTaxMonthly)}
-                </span>
+                <span className="font-semibold">{formatMoney(results.propertyTaxMonthly)}</span>
               </div>
 
               <div className="flex justify-between border-b pb-2">
                 <span>Maintenance</span>
-                <span className="font-semibold">
-                  {formatMoney(results.maintenanceMonthly)}
-                </span>
+                <span className="font-semibold">{formatMoney(results.maintenanceMonthly)}</span>
               </div>
 
               <div className="flex justify-between border-b pb-2">
@@ -235,11 +340,19 @@ export default function Home() {
                 <span className="font-semibold">{formatMoney(hoaMonthly)}</span>
               </div>
 
+              <div className="flex justify-between border-b pb-2">
+                <span>Total Buy Cost / month</span>
+                <span className="font-semibold">{formatMoney(results.totalBuyMonthly)}</span>
+              </div>
+
+              <div className="flex justify-between border-b pb-2">
+                <span>Buyer Net Worth After {yearsToCompare} Years</span>
+                <span className="font-semibold">{formatMoney(results.finalBuyerNetWorth)}</span>
+              </div>
+
               <div className="flex justify-between pt-2 text-base">
-                <span className="font-bold">Total Buy Cost / month</span>
-                <span className="font-bold">
-                  {formatMoney(results.totalBuyMonthly)}
-                </span>
+                <span className="font-bold">Renter Net Worth After {yearsToCompare} Years</span>
+                <span className="font-bold">{formatMoney(results.finalRenterNetWorth)}</span>
               </div>
             </div>
           </div>
