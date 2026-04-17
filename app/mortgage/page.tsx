@@ -91,6 +91,13 @@ export default function MortgageCalculator() {
           <p className="font-bold">
             Estimated monthly mortgage: {formatMoney(payment)}
           </p>
+
+          <a
+            href={`/?homePrice=${homePrice}&rate=${interestRate}`}
+            className="inline-block mt-4 px-4 py-2 bg-blue-600 text-white rounded"
+          >
+            Compare with rent vs buy →
+          </a>
         </div>
       )}
     </main>

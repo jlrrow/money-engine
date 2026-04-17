@@ -42,12 +42,16 @@ function calculateMortgagePayment(
 export default function Home() {
   const searchParams = useSearchParams();
   const homePriceFromURL = searchParams.get("homePrice");
+  const rateFromURL = searchParams.get("rate");
+
   const [homePrice, setHomePrice] = useState(
     homePriceFromURL ? Number(homePriceFromURL) : 300000
    ); 
   const [monthlyRent, setMonthlyRent] = useState(2200);
   const [downPaymentPercent, setDownPaymentPercent] = useState(20);
-  const [interestRate, setInterestRate] = useState(6.5);
+  const [interestRate, setInterestRate] = useState(
+  rateFromURL ? Number(rateFromURL) : 6.5
+);
   const [propertyTaxRate, setPropertyTaxRate] = useState(1.2);
   const [maintenanceRate, setMaintenanceRate] = useState(1);
   const [insuranceMonthly, setInsuranceMonthly] = useState(150);
