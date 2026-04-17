@@ -76,7 +76,7 @@ export default function Affordability() {
         </p>
 
         <a
-          href="/"
+          href={`/?homePrice=${result}`}
           className="inline-block px-4 py-2 bg-blue-600 text-white rounded"
         >
           Now compare renting vs buying →

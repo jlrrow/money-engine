@@ -1,5 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   LineChart,
   Line,
@@ -39,7 +40,11 @@ function calculateMortgagePayment(
 }
 
 export default function Home() {
-  const [homePrice, setHomePrice] = useState(300000);
+  const searchParams = useSearchParams();
+  const homePriceFromURL = searchParams.get("homePrice");
+  const [homePrice, setHomePrice] = useState(
+    homePriceFromURL ? Number(homePriceFromURL) : 300000
+   ); 
   const [monthlyRent, setMonthlyRent] = useState(2200);
   const [downPaymentPercent, setDownPaymentPercent] = useState(20);
   const [interestRate, setInterestRate] = useState(6.5);
