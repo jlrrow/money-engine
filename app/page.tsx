@@ -46,12 +46,12 @@ export default function Home() {
 
   const [homePrice, setHomePrice] = useState(
     homePriceFromURL ? Number(homePriceFromURL) : 300000
-   ); 
+  );
   const [monthlyRent, setMonthlyRent] = useState(2200);
   const [downPaymentPercent, setDownPaymentPercent] = useState(20);
   const [interestRate, setInterestRate] = useState(
-  rateFromURL ? Number(rateFromURL) : 6.5
-);
+    rateFromURL ? Number(rateFromURL) : 6.5
+  );
   const [propertyTaxRate, setPropertyTaxRate] = useState(1.2);
   const [maintenanceRate, setMaintenanceRate] = useState(1);
   const [insuranceMonthly, setInsuranceMonthly] = useState(150);
@@ -132,7 +132,10 @@ export default function Home() {
       const sellingCosts = homeValue * 0.06;
       const buyerNetAfterSale = homeValue - sellingCosts - remainingLoan;
 
-      if (!breakEvenYear && buyerNetAfterSale > renterInvestments + buyingClosingCosts) {
+      if (
+        !breakEvenYear &&
+        buyerNetAfterSale > renterInvestments + buyingClosingCosts
+      ) {
         breakEvenYear = month / 12;
       }
 
@@ -181,44 +184,50 @@ export default function Home() {
     <main className="min-h-screen bg-slate-100 px-4 py-8 md:px-8 md:py-10">
       <div className="mx-auto max-w-7xl">
         <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
-  Rent vs Buy Calculator (2026)
-</h1>
+          Rent vs Buy Calculator (2026)
+        </h1>
 
-<p className="text-base md:text-lg text-slate-600 max-w-3xl mb-6">
-  Use this calculator to compare renting vs buying with real numbers,
-  including mortgage costs, taxes, maintenance, break-even timing,
-  and long-term net worth.
-</p>
+        <p className="text-base md:text-lg text-slate-600 max-w-3xl mb-6">
+          Use this calculator to compare renting vs buying with real numbers,
+          including mortgage costs, taxes, maintenance, break-even timing,
+          and long-term net worth.
+        </p>
 
-<div className="mb-8 flex flex-wrap gap-3">
-  <a
-    href="/affordability"
-    className="px-4 py-2.5 bg-white border rounded-xl shadow-sm hover:bg-slate-50"
-  >
-    Start with affordability →
-  </a>
+        <p className="text-slate-600 max-w-3xl mb-6">
+          Understand the true cost of homeownership versus renting and see how
+          your decision could affect your finances over time.
+        </p>
 
-  <a
-    href="/mortgage"
-    className="px-4 py-2.5 bg-white border rounded-xl shadow-sm hover:bg-slate-50"
-  >
-    Mortgage calculator →
-  </a>
+        <div className="mb-8 flex flex-wrap gap-3">
+          <a
+            href="/affordability"
+            className="px-4 py-2.5 bg-white border rounded-xl shadow-sm hover:bg-slate-50"
+          >
+            Start with affordability →
+          </a>
 
-  <a
-    href="/refinance"
-    className="px-4 py-2.5 bg-white border rounded-xl shadow-sm hover:bg-slate-50"
-  >
-    Refinance calculator →
-  </a>
+          <a
+            href="/mortgage"
+            className="px-4 py-2.5 bg-white border rounded-xl shadow-sm hover:bg-slate-50"
+          >
+            Mortgage calculator →
+          </a>
 
-  <a
-    href="/invest-vs-debt"
-    className="px-4 py-2.5 bg-white border rounded-xl shadow-sm hover:bg-slate-50"
-  >
-    Invest vs debt →
-  </a>
-</div>
+          <a
+            href="/refinance"
+            className="px-4 py-2.5 bg-white border rounded-xl shadow-sm hover:bg-slate-50"
+          >
+            Refinance calculator →
+          </a>
+
+          <a
+            href="/invest-vs-debt"
+            className="px-4 py-2.5 bg-white border rounded-xl shadow-sm hover:bg-slate-50"
+          >
+            Invest vs debt →
+          </a>
+        </div>
+
         <p className="text-slate-600 mb-8">
           Compare renting vs buying, including monthly costs and break-even timing.
         </p>
@@ -356,7 +365,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white p-6 shadow-sm border">
+          <div className="rounded-3xl bg-white p-6 md:p-8 shadow-sm border border-slate-200">
             <h2 className="text-xl font-semibold mb-4">Results</h2>
 
             <div className="rounded-2xl bg-slate-900 text-white p-6 mb-6 shadow-sm">
@@ -439,7 +448,9 @@ export default function Home() {
                   <LineChart data={results.chartData}>
                     <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
                     <XAxis dataKey="year" />
-                    <YAxis tickFormatter={(value) => `$${Math.round(value / 1000)}k`} />
+                    <YAxis
+                      tickFormatter={(value) => `$${Math.round(value / 1000)}k`}
+                    />
                     <Tooltip formatter={(value: any) => formatMoney(Number(value))} />
                     <Legend />
                     <Line
@@ -464,6 +475,13 @@ export default function Home() {
             </div>
           </div>
         </div>
+
+        <a
+          href="/affordability"
+          className="inline-block mt-6 text-blue-600 underline"
+        >
+          Start with affordability →
+        </a>
       </div>
     </main>
   );
